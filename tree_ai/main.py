@@ -8,6 +8,7 @@ from tree_ai.core.db.base_models import Base
 from tree_ai.domains.users.api import router as user_router
 from tree_ai.domains.sessions.api import router as session_router
 from tree_ai.domains.security.api import router as security_router
+from tree_ai.domains.organization.api import router as organization_router
 
 from flask import Flask
 from werkzeug.exceptions import HTTPException
@@ -17,8 +18,9 @@ app = Flask(__name__)
 app.register_blueprint(user_router)
 app.register_blueprint(session_router)
 app.register_blueprint(security_router)
+app.register_blueprint(organization_router)
 
-app.config["JWT_SECRET_KEY"] = "super-secret-key-change-me-plz" 
+app.config["JWT_SECRET_KEY"] = "super-secret-key-change-me-plz"
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=1)
