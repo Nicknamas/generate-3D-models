@@ -4,6 +4,8 @@ from typing import Any
 from flask import Blueprint, request
 from sqlalchemy.orm import Session
 
+from tree_ai.core.exceptions import UserNotFound
+from tree_ai.domains.users.models import UserModel
 from tree_ai.domains.users.repository import UserRepository
 from tree_ai.domains.users.schemas import UserCreate
 from tree_ai.domains.users.services import UserService
@@ -40,6 +42,9 @@ def get_user(user_id: int):
     with Session(engine) as session:
         user_repo = UserRepository(session)
         user_service = UserService(user_repo)
-        user = user_service.get_one(user_id)
+        user = user_service.get_one_or_none(UserModel.id == user_id)
+
+    if user is None:
+        raise UserNotFound()
 
     return asdict(user)

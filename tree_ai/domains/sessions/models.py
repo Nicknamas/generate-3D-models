@@ -10,6 +10,5 @@ class SessionModel(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(50), nullable=False, default='Новая сессия')
     messages: Mapped[list[MessageModel]] = relationship(
-        back_populates="session", 
         cascade="all, delete-orphan"
     )

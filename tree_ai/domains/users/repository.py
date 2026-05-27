@@ -1,3 +1,4 @@
+from sqlalchemy.sql._typing import _ColumnExpressionArgument
 from sqlalchemy import select
 from tree_ai.domains.users.models import UserModel
 
@@ -14,6 +15,9 @@ class UserRepository:
         stmt = select(UserModel)
         return self.session.scalars(stmt)
 
-    def get_one(self, id: int):
-        stmt = select(UserModel).filter(UserModel.id == id)
-        return self.session.scalar(stmt)
+    def get_one_or_none(
+        self, 
+        *filters: _ColumnExpressionArgument[bool]
+    ):
+        stmt = select(UserModel).where(*filters)
+        return self.session.scalars(stmt).one_or_none()
