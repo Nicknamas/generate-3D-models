@@ -1,10 +1,10 @@
+from flask_jwt_extended import jwt_required
 from dataclasses import asdict
 from tree_ai.core.db.session import engine
 from typing import Any
 from flask import Blueprint, request
 from sqlalchemy.orm import Session
 
-from tree_ai.core.exceptions import UserNotFound
 from tree_ai.domains.users.models import UserModel
 from tree_ai.domains.users.repository import UserRepository
 from tree_ai.domains.users.schemas import UserCreate
@@ -28,6 +28,7 @@ def create_user():
 
 
 @router.get('/users')
+@jwt_required()
 def get_users():
     with Session(engine) as session:
         user_repo = UserRepository(session)

@@ -1,4 +1,3 @@
-import bcrypt
 from typing import Self
 from dataclasses import dataclass
 

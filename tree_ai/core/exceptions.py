@@ -5,6 +5,10 @@ class UserNotFound(HTTPException):
     code = 404
     description = "User not found"
 
+class UserSessionNotFound(HTTPException):
+    code = 404
+    description = "User session not found"
+
 
 class IncorrectEmailOrUsernameException(HTTPException):
     code = 400

@@ -1,7 +1,12 @@
 from dataclasses import asdict
-from tree_ai.core.db.base_models import model_as_dict
 from sqlalchemy.orm import Session
-from flask import Blueprint, request
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import (
+    create_access_token, 
+    create_refresh_token,
+    set_access_cookies,
+    set_refresh_cookies
+)
 
 from tree_ai.core.db.session import engine
 from tree_ai.core.exceptions import EmptyEmailException, EmptyPasswordException, IncorrectEmailOrUsernameException
@@ -34,5 +39,15 @@ def login():
         raise IncorrectEmailOrUsernameException()
 
     user_dto = UserGet.from_model(user)
+    access_token = create_access_token(identity=username)
+    refresh_token = create_refresh_token(identity=username)
 
-    return asdict(user_dto), 201
+    response = jsonify({
+        "msg": "Login successful",
+        "data": asdict(user_dto)
+    })
+
+    set_access_cookies(response, access_token)
+    set_refresh_cookies(response, refresh_token)
+
+    return response, 201
