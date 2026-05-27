@@ -8,6 +8,7 @@ dependencies = [
     "bcrypt>=5.0.0",
     "dotenv>=0.9.9",
     "flask>=3.1.3",
+    "flask-jwt-extended>=4.7.4",
     "flask-openapi3[elements,rapidoc,rapipdf,redoc,scalar,swagger]>=4.3.2",
     "openai>=2.38.0",
     "pwdlib[argon2]>=0.3.0",
