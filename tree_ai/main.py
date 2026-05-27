@@ -32,7 +32,6 @@ def handle_not_found_error(error):
 
 @app.errorhandler(HTTPException)
 def handle_unexpected_error(error):
-    print('helo')
     if isinstance(error, HTTPException):
         return {
             "success": False,

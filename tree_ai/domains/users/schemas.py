@@ -3,6 +3,7 @@ from typing import Self
 from dataclasses import dataclass
 
 from tree_ai.core.db.base_models import model_as_dict
+from tree_ai.domains.security.password import password_hash
 from tree_ai.domains.users.models import UserModel
 
 
@@ -34,10 +35,7 @@ class UserUpdate:
             model.username = self.username
 
         if self.password:
-            salt = bcrypt.gensalt()
-            model.password_hash = bcrypt.hashpw(
-                self.password.encode(), salt
-            ).decode()
+            model.password_hash = password_hash.hash(self.password)
 
         return model
 

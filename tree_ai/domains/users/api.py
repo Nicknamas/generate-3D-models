@@ -44,7 +44,4 @@ def get_user(user_id: int):
         user_service = UserService(user_repo)
         user = user_service.get_one_or_none(UserModel.id == user_id)
 
-    if user is None:
-        raise UserNotFound()
-
     return asdict(user)
