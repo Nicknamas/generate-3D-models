@@ -23,3 +23,7 @@ class EmptyEmailException(HTTPException):
 class EmptyPasswordException(HTTPException):
     code = 400
     description = "Empty password"
+
+class OrganizationNotFound(HTTPException):
+    code = 404
+    description = "Organization not found"

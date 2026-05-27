@@ -9,6 +9,9 @@ from tree_ai.domains.users.api import router as user_router
 from tree_ai.domains.sessions.api import router as session_router
 from tree_ai.domains.security.api import router as security_router
 from tree_ai.domains.organization.api import router as organization_router
+from tree_ai.domains.messages.api import router as messages_router
+from tree_ai.domains.objects.api import router as object_router
+
 
 from flask import Flask
 from werkzeug.exceptions import HTTPException
@@ -19,28 +22,15 @@ app.register_blueprint(user_router)
 app.register_blueprint(session_router)
 app.register_blueprint(security_router)
 app.register_blueprint(organization_router)
+app.register_blueprint(messages_router)
+app.register_blueprint(object_router)
 
-app.config["JWT_SECRET_KEY"] = "super-secret-key-change-me-plz"
+app.config["JWT_SECRET_KEY"] = "super-secret-key-change-me-plz" 
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=1)
 
 jwt = JWTManager(app)
-
-redis_client = redis.StrictRedis(
-    host="localhost", 
-    port=6379, 
-    db=0, 
-    decode_responses=True
-)
-
-@jwt.token_in_blocklist_loader
-def check_if_token_is_revoked(_, jwt_payload):
-    jti = jwt_payload["jti"]
-    
-    token_in_redis = redis_client.get(jti)
-    
-    return token_in_redis is not None
 
 with app.app_context():
     Base.metadata.create_all(engine)
