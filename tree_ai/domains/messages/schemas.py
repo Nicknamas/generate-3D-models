@@ -7,13 +7,17 @@ from tree_ai.domains.messages.models import MessagesModel
 
 @dataclass
 class MessagesCreate:
-    title: str
+    description: str
+    session_id: str
 
 
 @dataclass
 class MessagesGet:
     id: int
-    title: str
+    description: str
+    data: bytes | None
+    session_id: str
+    user_id: str
 
     @classmethod
     def from_model(cls, model: MessagesModel) -> Self:
@@ -23,11 +27,11 @@ class MessagesGet:
 
 @dataclass
 class MessagesUpdate:
-    title: str | None = None
+    description: str | None = None
 
     def update_model(self, model: MessagesModel) -> MessagesModel:
-        if self.title:
-            model.title = self.title
+        if self.description:
+            model.description = self.description
 
         return model
 

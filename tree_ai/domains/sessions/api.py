@@ -16,8 +16,7 @@ router = Blueprint("sessions", __name__)
 
 @router.post('/sessions')
 def create_session():
-    data: dict[str, Any] = request.get_json()
-    session_dto = SessionCreate(**data)
+    session_dto = SessionCreate()
 
     with Session(engine) as session:
         session_repo = SessionRepository(session)

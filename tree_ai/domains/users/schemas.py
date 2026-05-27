@@ -10,12 +10,16 @@ from tree_ai.domains.users.models import UserModel
 class UserCreate:
     username: str
     password: str
+    is_admin: bool = False
+    organization_id: int | None = None
 
 
 @dataclass
 class UserGet:
     id: int
     username: str
+    is_admin: bool
+    organization_id: int | None
 
     @classmethod
     def from_model(cls, model: UserModel) -> Self:

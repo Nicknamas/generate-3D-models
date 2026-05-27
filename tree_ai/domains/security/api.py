@@ -13,7 +13,6 @@ from tree_ai.core.exceptions import EmptyEmailException, EmptyPasswordException,
 from tree_ai.domains.security.password import password_hash
 from tree_ai.domains.users.models import UserModel
 from tree_ai.domains.users.repository import UserRepository
-from tree_ai.domains.users.schemas import UserGet
 
 
 router = Blueprint("security", __name__)
@@ -38,13 +37,12 @@ def login():
     if user is None or not password_hash.verify(password, user.password_hash):
         raise IncorrectEmailOrUsernameException()
 
-    user_dto = UserGet.from_model(user)
-    access_token = create_access_token(identity=username)
-    refresh_token = create_refresh_token(identity=username)
+    access_token = create_access_token(identity=str(user.id))
+    refresh_token = create_refresh_token(identity=str(user.id))
 
     response = jsonify({
-        "msg": "Login successful",
-        "data": asdict(user_dto)
+        "access_token": access_token,
+        "refresh_token": refresh_token
     })
 
     set_access_cookies(response, access_token)

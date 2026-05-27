@@ -13,6 +13,5 @@ class UserModel(Base):
     password_hash: Mapped[str]
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     organization_id: Mapped[int] = mapped_column(ForeignKey("organizations.id"), nullable=True)
-    objects: Mapped[list[ObjectsModel]] = relationship()
 
 

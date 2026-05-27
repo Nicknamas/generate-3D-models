@@ -7,7 +7,7 @@ from tree_ai.domains.sessions.models import SessionModel
 
 @dataclass
 class SessionCreate:
-    title: str
+    title: str | None = None
 
 
 @dataclass
