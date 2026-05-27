@@ -1,6 +1,5 @@
 import bcrypt
 from dataclasses import asdict
-from tree_ai.core.db.base_models import model_as_dict
 from tree_ai.domains.users.models import UserModel
 from tree_ai.domains.users.repository import UserRepository
 from tree_ai.domains.users.schemas import UserCreate, UserGet
