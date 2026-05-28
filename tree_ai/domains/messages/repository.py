@@ -10,7 +10,11 @@ class MessagesRepository:
         self.session.add(model)
         self.session.commit()
 
-    def get_list(self):
+    def get_list(self, session_id: str | None):
+        if session_id is not None:
+            stmt = select(MessagesModel).where(MessagesModel.session_id == int(session_id))
+            return self.session.scalars(stmt)
+
         stmt = select(MessagesModel)
         return self.session.scalars(stmt)
 

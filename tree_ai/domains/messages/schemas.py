@@ -9,13 +9,14 @@ from tree_ai.domains.messages.models import MessagesModel
 class MessagesCreate:
     description: str
     session_id: str
+    data: str | None
 
 
 @dataclass
 class MessagesGet:
     id: int
     description: str
-    data: bytes | None
+    data: str | None
     session_id: str
     user_id: str
 

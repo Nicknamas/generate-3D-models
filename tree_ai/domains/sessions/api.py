@@ -1,8 +1,7 @@
+from flask import Blueprint
 from flask_jwt_extended import jwt_required
 from dataclasses import asdict
 from tree_ai.core.db.session import engine
-from typing import Any
-from flask import Blueprint, request
 from sqlalchemy.orm import Session
 
 from tree_ai.domains.sessions.models import SessionModel

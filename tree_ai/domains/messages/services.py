@@ -15,8 +15,8 @@ class MessagesService:
         self.messages_repository.create(model)
         return MessagesGet.from_model(model)
 
-    def get_list(self) -> list[MessagesGet]:
-        messages_models = self.messages_repository.get_list()
+    def get_list(self, session_id: str | None) -> list[MessagesGet]:
+        messages_models = self.messages_repository.get_list(session_id)
         return [MessagesGet.from_model(model) for model in messages_models]
 
     def get_one_or_none(self, *filters: _ColumnExpressionArgument[bool]) -> Optional[MessagesGet]:

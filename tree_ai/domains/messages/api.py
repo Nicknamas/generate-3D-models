@@ -1,5 +1,6 @@
 from flask_jwt_extended import jwt_required
 from dataclasses import asdict
+from tree_ai.core.ai import get_creating_script, get_detailed_prompt_by_ai
 from tree_ai.core.db.session import engine
 from typing import Any
 from flask import Blueprint, request
@@ -15,8 +16,16 @@ router = Blueprint("messages", __name__)
 
 
 @router.post('/messages')
+@jwt_required()
 def create_messages():
     data: dict[str, Any] = request.get_json()
+
+    prompt = data.get('description')
+
+    detailed_prompt = get_detailed_prompt_by_ai(prompt)
+
+    data['data'] = detailed_prompt
+
     messages_dto = MessagesCreate(**data)
 
     with Session(engine) as session:
@@ -30,10 +39,12 @@ def create_messages():
 @router.get('/messages')
 @jwt_required()
 def get_messages():
+    session_id = request.args.get('session_id')
+
     with Session(engine) as session:
         messages_repo = MessagesRepository(session)
         messages_service = MessagesService(messages_repo)
-        list_messages_get_dto = messages_service.get_list()
+        list_messages_get_dto = messages_service.get_list(session_id)
 
     return [asdict(message) for message in list_messages_get_dto]
 
