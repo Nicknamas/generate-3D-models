@@ -1,5 +1,4 @@
 from datetime import timedelta
-import redis
 
 from flask_jwt_extended import JWTManager
 

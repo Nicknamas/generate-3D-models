@@ -1,6 +1,5 @@
 from dataclasses import asdict
 from typing import Optional
-from tree_ai.core.exceptions import UserNotFound
 from tree_ai.domains.security.password import password_hash
 from tree_ai.domains.users.models import UserModel
 from tree_ai.domains.users.repository import UserRepository

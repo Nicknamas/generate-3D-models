@@ -1,8 +1,7 @@
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Boolean, ForeignKey
 
 from tree_ai.core.db.base_models import Base
-from tree_ai.domains.objects.models import ObjectsModel
 
 
 class UserModel(Base):
