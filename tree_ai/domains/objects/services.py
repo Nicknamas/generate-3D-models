@@ -1,5 +1,6 @@
 from dataclasses import asdict
 from typing import Optional
+import os
 from tree_ai.domains.objects.models import ObjectsModel
 from tree_ai.domains.objects.repository import ObjectsRepository
 from tree_ai.domains.objects.schemas import ObjectsCreate, ObjectsGet
@@ -9,8 +10,20 @@ class ObjectsService:
     def __init__(self, objects_repository: ObjectsRepository):
         self.objects_repository = objects_repository
 
-    def create(self, dto: ObjectsCreate) -> ObjectsGet:
+    def create(self, title: str, message_id: int) -> ObjectsGet:
+        CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+        FILE_PATH = os.path.join(CURRENT_DIR, "object.obj")
+
+        with open(FILE_PATH, "rb") as file:
+            binary_data = file.read()
+        dto = ObjectsCreate(
+            title=title,
+            data=binary_data,
+            message_id=message_id
+        )
+
         data = asdict(dto)
+
         model = ObjectsModel(**data)
         self.objects_repository.create(model)
         return ObjectsGet.from_model(model)

@@ -1,3 +1,4 @@
+import datetime
 from typing import Self
 from dataclasses import dataclass
 
@@ -8,12 +9,17 @@ from tree_ai.domains.objects.models import ObjectsModel
 @dataclass
 class ObjectsCreate:
     title: str
+    data: bytes
+    message_id: int
 
 
 @dataclass
 class ObjectsGet:
     id: int
     title: str
+    data: bytes
+    message_id: int
+    created_at: datetime.datetime
 
     @classmethod
     def from_model(cls, model: ObjectsModel) -> Self:

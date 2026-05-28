@@ -26,8 +26,8 @@ app.register_blueprint(messages_router)
 app.register_blueprint(object_router)
 
 app.config["JWT_SECRET_KEY"] = "super-secret-key-change-me-plz" 
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
-app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=2)
 
 jwt = JWTManager(app)
 

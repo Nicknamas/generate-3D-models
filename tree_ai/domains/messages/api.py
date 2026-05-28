@@ -1,3 +1,5 @@
+import base64
+
 from flask_jwt_extended import jwt_required
 from dataclasses import asdict
 from tree_ai.core.ai import get_creating_script, get_detailed_prompt_by_ai
@@ -10,6 +12,8 @@ from tree_ai.domains.messages.models import MessagesModel
 from tree_ai.domains.messages.repository import MessagesRepository
 from tree_ai.domains.messages.schemas import MessagesCreate
 from tree_ai.domains.messages.services import MessagesService
+from tree_ai.domains.objects.repository import ObjectsRepository
+from tree_ai.domains.objects.services import ObjectsService
 
 
 router = Blueprint("messages", __name__)
@@ -20,18 +24,27 @@ router = Blueprint("messages", __name__)
 def create_messages():
     data: dict[str, Any] = request.get_json()
 
-    prompt = data.get('description')
+    prompt = data.get('request')
 
     detailed_prompt = get_detailed_prompt_by_ai(prompt)
 
-    data['data'] = detailed_prompt
+    data['description'] = detailed_prompt
+
+    script = get_creating_script(detailed_prompt)
+
+    data['script'] = script
 
     messages_dto = MessagesCreate(**data)
 
     with Session(engine) as session:
+        objects_repo = ObjectsRepository(session)
+        objects_service = ObjectsService(objects_repo)
+
         messages_repo = MessagesRepository(session)
         messages_service = MessagesService(messages_repo)
+
         messages_get_dto = messages_service.create(messages_dto)
+        objects_service.create(str(prompt), messages_get_dto.id)
 
     return asdict(messages_get_dto)
 
@@ -44,9 +57,20 @@ def get_messages():
     with Session(engine) as session:
         messages_repo = MessagesRepository(session)
         messages_service = MessagesService(messages_repo)
-        list_messages_get_dto = messages_service.get_list(session_id)
+        list_messages_dto = messages_service.get_list(session_id)
 
-    return [asdict(message) for message in list_messages_get_dto]
+    result = []
+    for msg_dto in list_messages_dto:
+        msg_dict = asdict(msg_dto)
+        
+        if msg_dict.get('object') is not None:
+            obj_data = msg_dict['object'].get('data')
+            if isinstance(obj_data, bytes):
+                msg_dict['object']['data'] = base64.b64encode(obj_data).decode('utf-8')
+                
+        result.append(msg_dict)
+
+    return result, 200
 
 
 @router.get('/messages/<int:messages_id>')

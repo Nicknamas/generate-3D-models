@@ -1,3 +1,5 @@
+from sqlalchemy.orm import relationship
+from typing import Optional
 from datetime import timezone
 from datetime import datetime
 
@@ -10,10 +12,15 @@ class MessagesModel(Base):
     __tablename__ = 'messages'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    description: Mapped[str] = mapped_column(String(500), nullable=False)
-    data: Mapped[str] = mapped_column(String(50000), nullable=True)
+    request: Mapped[str] = mapped_column(String(500), nullable=False)
+    description: Mapped[str] = mapped_column(String, nullable=True)
+    script: Mapped[str] = mapped_column(String, nullable=True)
     session_id: Mapped[int] = mapped_column(ForeignKey('sessions.id', ondelete="CASCADE"))
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id', ondelete="CASCADE"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.now(timezone.utc)
+    )
+    object: Mapped[Optional["ObjectsModel"]] = relationship(
+        back_populates="message", 
+        cascade="all, delete-orphan"
     )
