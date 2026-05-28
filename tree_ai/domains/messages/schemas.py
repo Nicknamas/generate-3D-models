@@ -1,3 +1,4 @@
+import datetime
 from typing import Self
 from dataclasses import dataclass
 
@@ -19,6 +20,7 @@ class MessagesGet:
     data: str | None
     session_id: str
     user_id: str
+    created_at: datetime.datetime
 
     @classmethod
     def from_model(cls, model: MessagesModel) -> Self:

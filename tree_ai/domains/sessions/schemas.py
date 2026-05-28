@@ -1,3 +1,4 @@
+import datetime
 from typing import Self
 from dataclasses import dataclass
 
@@ -14,6 +15,7 @@ class SessionCreate:
 class SessionGet:
     id: int
     title: str
+    created_at: datetime.datetime
 
     @classmethod
     def from_model(cls, model: SessionModel) -> Self:

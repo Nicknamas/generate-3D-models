@@ -1,3 +1,5 @@
+from datetime import timezone
+from datetime import datetime
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -11,4 +13,7 @@ class SessionModel(Base):
     title: Mapped[str] = mapped_column(String(50), nullable=False, default='Новая сессия')
     messages: Mapped[list[MessagesModel]] = relationship(
         cascade="all, delete-orphan"
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        default=lambda: datetime.now(timezone.utc)
     )

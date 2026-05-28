@@ -10,6 +10,7 @@ from tree_ai.domains.users.repository import UserRepository
 from tree_ai.domains.users.schemas import UserCreate
 from tree_ai.domains.users.services import UserService
 
+
 router = Blueprint("users", __name__)
 
 
