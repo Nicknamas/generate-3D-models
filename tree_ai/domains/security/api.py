@@ -31,7 +31,7 @@ def login():
 
     with Session(engine) as _session:
         user_repo = UserRepository(_session)
-        user = user_repo.get_one_or_none(UserModel.id == username.lower())
+        user = user_repo.get_one_or_none(UserModel.username == username.lower())
 
     if user is None or not password_hash.verify(password, user.password_hash):
         raise IncorrectEmailOrUsernameException()

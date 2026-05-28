@@ -1,3 +1,4 @@
+from sqlalchemy.orm import relationship
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Boolean, ForeignKey
 
@@ -12,5 +13,6 @@ class UserModel(Base):
     password_hash: Mapped[str]
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     organization_id: Mapped[int] = mapped_column(ForeignKey("organizations.id"), nullable=True)
+    credits: Mapped["CreditsModel"] = relationship()
 
 

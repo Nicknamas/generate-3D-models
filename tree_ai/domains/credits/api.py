@@ -35,6 +35,7 @@ def create_credits():
 def add_credits():
     data: dict[str, Any] = request.get_json()
     amount = data.get('amount', 0)
+    print(amount)
 
     current_username = get_jwt_identity()
 

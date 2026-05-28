@@ -10,7 +10,11 @@ class SessionRepository:
         self.session.add(model)
         self.session.commit()
 
-    def get_list(self):
+    def get_list(self, user_id: str | None):
+        if user_id is not None:
+            stmt = select(SessionModel).where(SessionModel.user_id == int(user_id))
+            return self.session.scalars(stmt)
+
         stmt = select(SessionModel)
         return self.session.scalars(stmt)
 

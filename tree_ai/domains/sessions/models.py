@@ -1,6 +1,6 @@
 from datetime import timezone
 from datetime import datetime
-from sqlalchemy import String
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from tree_ai.core.db.base_models import Base
@@ -11,6 +11,7 @@ class SessionModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(50), nullable=False, default='Новая сессия')
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id', ondelete="CASCADE"), nullable=True)
     messages: Mapped[list[MessagesModel]] = relationship(
         cascade="all, delete-orphan"
     )

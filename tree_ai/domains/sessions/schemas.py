@@ -8,6 +8,7 @@ from tree_ai.domains.sessions.models import SessionModel
 
 @dataclass
 class SessionCreate:
+    user_id: int
     title: str | None = None
 
 
@@ -16,6 +17,7 @@ class SessionGet:
     id: int
     title: str
     created_at: datetime.datetime
+    user_id: int | None
 
     @classmethod
     def from_model(cls, model: SessionModel) -> Self:

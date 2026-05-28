@@ -1,5 +1,5 @@
-from flask import Blueprint
-from flask_jwt_extended import jwt_required
+from flask import Blueprint, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from dataclasses import asdict
 from tree_ai.core.db.session import engine
 from sqlalchemy.orm import Session
@@ -14,8 +14,10 @@ router = Blueprint("sessions", __name__)
 
 
 @router.post('/sessions')
+@jwt_required()
 def create_session():
-    session_dto = SessionCreate()
+    user_id = get_jwt_identity()
+    session_dto = SessionCreate(user_id)
 
     with Session(engine) as session:
         session_repo = SessionRepository(session)
@@ -28,10 +30,12 @@ def create_session():
 @router.get('/sessions')
 @jwt_required()
 def get_sessions():
+    user_id = get_jwt_identity()
+
     with Session(engine) as _session:
         session_repo = SessionRepository(_session)
         session_service = SessionService(session_repo)
-        list_session_get_dto = session_service.get_list()
+        list_session_get_dto = session_service.get_list(user_id)
 
     return [asdict(sess) for sess in list_session_get_dto]
 

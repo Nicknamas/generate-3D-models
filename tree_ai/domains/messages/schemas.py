@@ -13,6 +13,7 @@ class MessagesCreate:
     session_id: str
     script: str | None
     description: str | None
+    user_id: int
 
 
 @dataclass

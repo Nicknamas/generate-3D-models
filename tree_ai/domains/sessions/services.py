@@ -15,8 +15,8 @@ class SessionService:
         self.session_repository.create(model)
         return SessionGet.from_model(model)
 
-    def get_list(self) -> list[SessionGet]:
-        session_models = self.session_repository.get_list()
+    def get_list(self, user_id: str | None) -> list[SessionGet]:
+        session_models = self.session_repository.get_list(user_id)
         return [SessionGet.from_model(model) for model in session_models]
 
     def get_one(self, id: int) -> Optional[SessionGet]:

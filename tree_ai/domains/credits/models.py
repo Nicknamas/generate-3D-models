@@ -8,4 +8,4 @@ class CreditsModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id', ondelete="CASCADE"), nullable=False, unique=True)
-    amount: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    amount: Mapped[int] = mapped_column(Integer, default=100, nullable=False)
