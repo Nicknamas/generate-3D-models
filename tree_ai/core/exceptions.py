@@ -5,6 +5,10 @@ class UserNotFound(HTTPException):
     code = 404
     description = "User not found"
 
+class CreditsNotFound(HTTPException):
+    code = 404
+    description = "Credits not found"
+
 class UserSessionNotFound(HTTPException):
     code = 404
     description = "User session not found"
@@ -27,3 +31,7 @@ class EmptyPasswordException(HTTPException):
 class OrganizationNotFound(HTTPException):
     code = 404
     description = "Organization not found"
+
+class NeedMoreMoney(HTTPException):
+    code = 400
+    description = "Need more money :D"

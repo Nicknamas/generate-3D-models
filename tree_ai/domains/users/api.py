@@ -57,9 +57,8 @@ def delete_user(user_id: int):
         user_repo = UserRepository(session)
         user_service = UserService(user_repo)
 
-        # Опционально: не даем удалить самого себя
         current_username = get_jwt_identity()
-        current_user = user_repo.get_one_or_none(UserModel.username == current_username)
+        current_user = user_repo.get_one_or_none(UserModel.id == current_username)
         if current_user and current_user.id == user_id:
             return {"error": "Cannot delete yourself"}, 400
 

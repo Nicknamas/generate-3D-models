@@ -1,3 +1,8 @@
+from tree_ai.core.exceptions import NeedMoreMoney, UserNotFound
+from tree_ai.domains.credits.services import CreditsService
+from tree_ai.domains.credits.repository import CreditsRepository
+from tree_ai.domains.users.models import UserModel
+from flask_jwt_extended import get_jwt_identity
 import base64
 
 from flask_jwt_extended import jwt_required
@@ -14,6 +19,7 @@ from tree_ai.domains.messages.schemas import MessagesCreate
 from tree_ai.domains.messages.services import MessagesService
 from tree_ai.domains.objects.repository import ObjectsRepository
 from tree_ai.domains.objects.services import ObjectsService
+from tree_ai.domains.users.repository import UserRepository
 
 
 router = Blueprint("messages", __name__)
@@ -23,30 +29,61 @@ router = Blueprint("messages", __name__)
 @jwt_required()
 def create_messages():
     data: dict[str, Any] = request.get_json()
-
     prompt = data.get('request')
 
-    detailed_prompt = get_detailed_prompt_by_ai(prompt)
+    if not prompt:
+        return {"error": "Missing required field: 'request'"}, 400
 
-    data['description'] = detailed_prompt
-
-    script = get_creating_script(detailed_prompt)
-
-    data['script'] = script
-
-    messages_dto = MessagesCreate(**data)
+    current_username = get_jwt_identity()
 
     with Session(engine) as session:
-        objects_repo = ObjectsRepository(session)
-        objects_service = ObjectsService(objects_repo)
+        user_repo = UserRepository(session)
+        current_user = user_repo.get_one_or_none(UserModel.id == current_username)
+
+        if not current_user:
+            raise UserNotFound()
+
+        credits_repo = CreditsRepository(session)
+        credits_service = CreditsService(credits_repo)
+
+        cost_per_message = 1
+        balance = credits_service.get_balance(current_user.id)
+
+        if balance < cost_per_message:
+            raise NeedMoreMoney()
+
+        detailed_prompt = get_detailed_prompt_by_ai(prompt)
+        data['description'] = detailed_prompt
+
+        script = get_creating_script(detailed_prompt)
+        data['script'] = script
+        
+        data['user_id'] = current_user.id 
+
+        messages_dto = MessagesCreate(**data)
+
+        spend_result = credits_service.spend_credits(current_user.id, cost_per_message)
+        if not spend_result.success:
+            return {"error": spend_result.message}, 400
 
         messages_repo = MessagesRepository(session)
         messages_service = MessagesService(messages_repo)
 
-        messages_get_dto = messages_service.create(messages_dto)
-        objects_service.create(str(prompt), messages_get_dto.id)
+        objects_repo = ObjectsRepository(session)
+        objects_service = ObjectsService(objects_repo)
 
-    return asdict(messages_get_dto)
+        messages_get_dto = messages_service.create(messages_dto)
+
+        objects_service.create(
+            title=str(prompt), 
+            message_id=messages_get_dto.id
+        )
+
+        result = asdict(messages_get_dto)
+        result['credits_spent'] = cost_per_message
+        result['new_balance'] = spend_result.new_balance
+
+    return result, 201
 
 
 @router.get('/messages')

@@ -11,7 +11,7 @@ from tree_ai.domains.security.api import router as security_router
 from tree_ai.domains.organization.api import router as organization_router
 from tree_ai.domains.messages.api import router as messages_router
 from tree_ai.domains.objects.api import router as object_router
-
+from tree_ai.domains.credits.api import router as credits_router
 
 from flask import Flask
 from werkzeug.exceptions import HTTPException
@@ -24,6 +24,7 @@ app.register_blueprint(security_router)
 app.register_blueprint(organization_router)
 app.register_blueprint(messages_router)
 app.register_blueprint(object_router)
+app.register_blueprint(credits_router)
 
 app.config["JWT_SECRET_KEY"] = "super-secret-key-change-me-plz" 
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
